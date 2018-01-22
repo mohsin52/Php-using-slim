@@ -8,4 +8,22 @@ $app = new \Slim\App([
     ]
 ]);
 
+$container = $app->getContainer();
+
+// Register component on container
+$container['view'] = function ($container) {
+    $view = new \Slim\Views\Twig(__DIR__.'/../resources/views', [
+        'cache' => __DIR__.'/cache',
+    ]);
+
+    // Instantiate and add Slim specific extension
+    $view->addExtension(new Slim\Views\TwigExtension(
+        $container->router,
+        $container->request->getUri()
+
+    ));
+
+    return $view;
+};
+
 require __DIR__ . '/../app/routes.php';
